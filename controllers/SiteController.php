@@ -9,6 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use \app\models\NewUser;
 
 class SiteController extends Controller
 {
@@ -77,7 +78,7 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->redirect(['mahasiswa/index']);
         }
 
         $model->password = '';
@@ -124,5 +125,28 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    public function actionRegister()
+    {
+        $model = new NewUser();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                // form inputs are valid, do something here
+                $model->username = $_POST['NewUser']['username'];
+                $model->password = password_hash($_POST['NewUser']['password'], PASSWORD_ARGON2I) ;
+                $model->authKey = md5(random_bytes(5));
+                $model->accessToken = password_hash(random_bytes(5), PASSWORD_DEFAULT);
+                if($model->save())
+                {
+                    return $this->redirect(['login']);
+                }
+            }
+        }
+
+        return $this->render('register', [
+            'model' => $model,
+        ]);
     }
 }

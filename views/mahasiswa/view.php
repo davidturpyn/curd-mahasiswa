@@ -29,13 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'formatter' => [
-
             'class' => '\yii\i18n\Formatter',
-
             'dateFormat' => 'dd/MM/yyyy',
-
             'datetimeFormat' => 'MM/dd/yyyy HH:mm::ss',
-
         ],
         'attributes' => [
             'id',
